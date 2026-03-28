@@ -23,6 +23,10 @@ jobs:
       - run: |
           mkdir package
           cp target/$TARGET/release/$BINARY_NAME package/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
 
   build-linux-arm64:
     runs-on: ubuntu-22.04-arm
@@ -40,6 +44,10 @@ jobs:
       - run: |
           mkdir package
           cp target/$TARGET/release/$BINARY_NAME package/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
 
 
   build-linux-arm:
@@ -60,6 +68,10 @@ jobs:
       - run: |
           mkdir package
           cp target/$TARGET/release/$BINARY_NAME package/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
 
   build-windows-x86_64:
     runs-on: windows-latest
@@ -76,6 +88,10 @@ jobs:
       - run: |
           mkdir package
           cp target/$env:Target/release/$env:BINARY_NAME.exe package/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
 
   build-macos:
     runs-on: macos-latest
@@ -90,3 +106,21 @@ jobs:
       - run: |
           mkdir package
           cp target/$TARGET/release/$BINARY_NAME package/
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
+
+  third-party-licenses:
+    runs-on: ubuntu-latest
+    env:
+      OUTPUT: THIRD_PARTY_LICENSES.html
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo install cargo-about
+      - run: cargo about generate about.hbs > $OUTPUT
+      - uses: actions/upload-artifact@v7
+        with:
+          name: third_party_licenses
+          path: ${{ env.OUTPUT }}
