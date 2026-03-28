@@ -147,5 +147,5 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: third_party_licenses
-      - run: find . | sort
+      - run: find . -type f | sort
 
