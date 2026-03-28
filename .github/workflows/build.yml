@@ -50,6 +50,7 @@ jobs:
       - run: cargo build --release --target $env:TARGET
         env:
           RUSTFLAGS: -C target-feature=+crt-static
-      - run: |
-          mkdir package
-          cp target/$TARGET/release/totp-from-uri.exe package/
+      - uses: actions/upload-artifact@v6
+        with:
+          name: windows-tmp
+          path: target
