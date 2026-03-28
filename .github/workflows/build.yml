@@ -52,4 +52,4 @@ jobs:
           RUSTFLAGS: -C target-feature=+crt-static
       - run: |
           mkdir package
-          cp target/$TARGET/totp-from-uri package/
+          cp target/$TARGET/totp-from-uri.exe package/
