@@ -39,7 +39,7 @@ jobs:
       - run: cargo build --release --target $TARGET
       - run: |
           mkdir package
-          cp target/$TARGET/release/totp-from-uri package/
+          cp target/$TARGET/release/$BINARY_NAME package/
 
 
   build-linux-arm:
@@ -55,9 +55,11 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y musl-tools gcc-arm-linux-gnueabihf
       - run: cargo build --release --target $TARGET
+        env:
+          CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER: arm-linux-gnueabihf-gcc
       - run: |
           mkdir package
-          cp target/$TARGET/release/totp-from-uri package/
+          cp target/$TARGET/release/$BINARY_NAME package/
 
   build-windows-x86_64:
     runs-on: windows-latest
