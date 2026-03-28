@@ -41,6 +41,24 @@ jobs:
           mkdir package
           cp target/$TARGET/release/totp-from-uri package/
 
+
+  build-linux-arm:
+    runs-on: ubuntu-22.04-arm
+    env:
+      TARGET: arm-unknown-linux-musleabihf
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ env.TARGET }}
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y musl-tools
+      - run: cargo build --release --target $TARGET
+      - run: |
+          mkdir package
+          cp target/$TARGET/release/totp-from-uri package/
+
   build-windows-x86_64:
     runs-on: windows-latest
     env:
