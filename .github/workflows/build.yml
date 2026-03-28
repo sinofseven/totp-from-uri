@@ -56,3 +56,16 @@ jobs:
       - run: |
           mkdir package
           cp target/$env:Target/release/$env:BINARY_NAME.exe package/
+
+  build-macos:
+    runs-on: macos-latest
+    env:
+      TARGET: aarch64-apple-darwin
+    steps:
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ env.TARGET }}
+      - run: cargo build --release --target $TARGET
+      - run: |
+          mkdir package
+          cp target/$TARGET/release/$BINARY_NAME package/
