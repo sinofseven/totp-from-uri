@@ -62,6 +62,7 @@ jobs:
     env:
       TARGET: aarch64-apple-darwin
     steps:
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
         with:
           target: ${{ env.TARGET }}
