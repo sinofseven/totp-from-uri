@@ -27,6 +27,7 @@ jobs:
         with:
           name: tmp-${{ env.TARGET }}
           path: package
+          retention-days: 1
 
   build-linux-arm64:
     runs-on: ubuntu-22.04-arm
@@ -48,6 +49,7 @@ jobs:
         with:
           name: tmp-${{ env.TARGET }}
           path: package
+          retention-days: 1
 
 
   build-linux-arm:
@@ -72,6 +74,7 @@ jobs:
         with:
           name: tmp-${{ env.TARGET }}
           path: package
+          retention-days: 1
 
   build-windows-x86_64:
     runs-on: windows-latest
@@ -92,6 +95,7 @@ jobs:
         with:
           name: tmp-${{ env.TARGET }}
           path: package
+          retention-days: 1
 
   build-macos:
     runs-on: macos-latest
@@ -110,6 +114,7 @@ jobs:
         with:
           name: tmp-${{ env.TARGET }}
           path: package
+          retention-days: 1
 
   third-party-licenses:
     runs-on: ubuntu-latest
@@ -124,3 +129,17 @@ jobs:
         with:
           name: third_party_licenses
           path: ${{ env.OUTPUT }}
+          retention-days: 1
+
+  packaging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          merge-multiple: true
+          pattern: tmp-*
+      - uses: actions/download-artifact@v7
+        with:
+          name: third_party_licenses
+      - run: find . | sort
+
