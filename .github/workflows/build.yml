@@ -53,7 +53,7 @@ jobs:
           target: ${{ env.TARGET }}
       - run: |
           sudo apt-get update
-          sudo apt-get install -y musl-tools
+          sudo apt-get install -y musl-tools gcc-arm-linux-gnueabihf
       - run: cargo build --release --target $TARGET
       - run: |
           mkdir package
