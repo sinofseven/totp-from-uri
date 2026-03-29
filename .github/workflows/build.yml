@@ -160,6 +160,8 @@ jobs:
 
   packaging:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     needs:
       - build-linux-x86_64
       - build-linux-arm64
@@ -184,4 +186,17 @@ jobs:
       - run: ls . | xargs -I {} zip -r "{}.zip" "{}"
         working-directory: package
       - run: find package -type f | sort
-      - run: find package -type f | grep -F ".zip"
+      - run: |
+          FILES=$(find package -type f | grep -F ".zip")
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        id: release-files
+      - uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          generate_release_notes: true
+          files: ${{ steps.release-files.files }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
