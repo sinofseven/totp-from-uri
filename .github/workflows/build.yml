@@ -7,6 +7,7 @@ on:
 
 env:
   BINARY_NAME: totp-from-uri
+  THIRD_PARTY_LICENSE_OUTPUT: THIRD_PARTY_LICENSES.html
 
 jobs:
   build-linux-x86_64:
@@ -145,17 +146,16 @@ jobs:
 
   third-party-licenses:
     runs-on: ubuntu-latest
-    env:
-      OUTPUT: THIRD_PARTY_LICENSES.html
     steps:
       - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
       - run: cargo install cargo-about
-      - run: cargo about generate about.hbs > $OUTPUT
+      - run: cargo about generate about.hbs > ${{ env.THIRD_PARTY_LICENSE_OUTPUT }}
       - uses: actions/upload-artifact@v7
         with:
           name: third_party_licenses
-          path: ${{ env.OUTPUT }}
+          path: ${{ env.THIRD_PARTY_LICENSE_OUTPUT }}
           retention-days: 1
 
   packaging:
@@ -169,6 +169,7 @@ jobs:
       - third-party-licenses
     if: ${{ github.ref_type == 'tag' }}
     steps:
+      - uses: actions/checkout@v6
       - uses: actions/download-artifact@v7
         with:
           pattern: tmp-*
@@ -176,5 +177,7 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           name: third_party_licenses
+      - run: find . -type f | sort
+      - run: ls package | xargs -I=name cp "${{ env.THIRD_PARTY_LICENSE_OUTPUT }}" package/name/
       - run: find . -type f | sort
 
