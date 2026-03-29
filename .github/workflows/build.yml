@@ -2,6 +2,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "v*"
 
 env:
   BINARY_NAME: totp-from-uri
@@ -21,9 +23,11 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+        if: ${{ github.ref_type == 'tag' }}
       - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
           path: package
@@ -43,9 +47,11 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+        if: ${{ github.ref_type == 'tag' }}
       - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
           path: package
@@ -68,9 +74,32 @@ jobs:
         env:
           CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER: arm-linux-gnueabihf-gcc
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+        if: ${{ github.ref_type == 'tag' }}
       - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_type == 'tag' }}
+        with:
+          name: tmp-${{ env.TARGET }}
+          path: package
+          retention-days: 1
+
+  build-macos:
+    runs-on: macos-latest
+    env:
+      TARGET: aarch64-apple-darwin
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          target: ${{ env.TARGET }}
+      - run: cargo build --release --target $TARGET
+      - run: |
+          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+        if: ${{ github.ref_type == 'tag' }}
+      - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
           path: package
@@ -89,28 +118,11 @@ jobs:
         env:
           RUSTFLAGS: -C target-feature=+crt-static
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$env:TARGET/release/$env:BINARY_NAME.exe package/$TARGET
+          mkdir -p package/$env:BINARY_NAME_${{ github.ref_name }}_$env:TARGET
+          cp target/$env:TARGET/release/$env:BINARY_NAME package/$env:BINARY_NAME_${{ github.ref_name }}_$env:TARGET
+        if: ${{ github.ref_type == 'tag' }}
       - uses: actions/upload-artifact@v7
-        with:
-          name: tmp-${{ env.TARGET }}
-          path: package
-          retention-days: 1
-
-  build-macos:
-    runs-on: macos-latest
-    env:
-      TARGET: aarch64-apple-darwin
-    steps:
-      - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          target: ${{ env.TARGET }}
-      - run: cargo build --release --target $TARGET
-      - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
-      - uses: actions/upload-artifact@v7
+        if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
           path: package
@@ -140,6 +152,7 @@ jobs:
       - build-windows-x86_64
       - build-macos
       - third-party-licenses
+    if: ${{ github.ref_type == 'tag' }}
     steps:
       - uses: actions/download-artifact@v7
         with:
