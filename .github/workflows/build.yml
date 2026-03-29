@@ -21,8 +21,8 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir package
+          cp target/$TARGET/release/$BINARY_NAME package/
       - uses: actions/upload-artifact@v7
         with:
           name: tmp-${{ env.TARGET }}
@@ -43,8 +43,8 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir package
+          cp target/$TARGET/release/$BINARY_NAME package/
       - uses: actions/upload-artifact@v7
         with:
           name: tmp-${{ env.TARGET }}
@@ -68,8 +68,8 @@ jobs:
         env:
           CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER: arm-linux-gnueabihf-gcc
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir package
+          cp target/$TARGET/release/$BINARY_NAME package/
       - uses: actions/upload-artifact@v7
         with:
           name: tmp-${{ env.TARGET }}
@@ -89,8 +89,8 @@ jobs:
         env:
           RUSTFLAGS: -C target-feature=+crt-static
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$env:TARGET/release/$env:BINARY_NAME.exe package/$TARGET
+          mkdir package
+          cp target/$env:Target/release/$env:BINARY_NAME.exe package/
       - uses: actions/upload-artifact@v7
         with:
           name: tmp-${{ env.TARGET }}
@@ -108,8 +108,8 @@ jobs:
           target: ${{ env.TARGET }}
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$TARGET
+          mkdir package
+          cp target/$TARGET/release/$BINARY_NAME package/
       - uses: actions/upload-artifact@v7
         with:
           name: tmp-${{ env.TARGET }}
