@@ -181,5 +181,7 @@ jobs:
       - run: ls package | xargs -I {} cp ${{ env.THIRD_PARTY_LICENSE_OUTPUT }} package/{}/
       - run: ls package | xargs -I {} cp README.md package/{}/
       - run: ls package | xargs -I {} cp LICENSE package/{}/
-      - run: find . -type f | sort
+      - run: ls . | xargs -I {} zip -r "{}.zip" "{}"
+        working-directory: package
+      - run: find package -type f | sort
 
