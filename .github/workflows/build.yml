@@ -178,10 +178,8 @@ jobs:
         with:
           name: third_party_licenses
       - run: find . -type f | sort
-      - uses: actions/upload-artifact@v7
-        with:
-          name: all-files
-          path: |
-            ${{ env.THIRD_PARTY_LICENSE_OUTPUT }}
-            package
-            
+      - run: ls package | xargs -I {} cp ${{ env.THIRD_PARTY_LICENSE_OUTPUT }} package/{}/
+      - run: ls package | xargs -I {} cp README.md package/{}/
+      - run: ls package | xargs -I {} cp LICENSE package/{}/
+      - run: find . -type f | sort
+
