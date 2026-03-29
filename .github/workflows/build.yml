@@ -172,6 +172,7 @@ jobs:
       - uses: actions/download-artifact@v7
         with:
           pattern: tmp-*
+          merge-multiple: true
       - uses: actions/download-artifact@v7
         with:
           name: third_party_licenses
