@@ -23,14 +23,17 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          mkdir -p "${{ env.TMP_DIR }}"
+          cp "${{ env.SOURCE_BINARY }}" "${{ env.TMP_DIR }}"
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TMP_DIR: tmp/package/${{ env.BINARY_NAME }}_${{ github.ref_name }}_${{ env.TARGET }}
+          SOURCE_BINARY: target/${{ env.TARGET }}/release/${{ env.BINARY_NAME }}
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
-          path: package
+          path: tmp
           retention-days: 1
 
   build-linux-arm64:
@@ -47,14 +50,17 @@ jobs:
           sudo apt-get install -y musl-tools
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          mkdir -p "${{ env.TMP_DIR }}"
+          cp "${{ env.SOURCE_BINARY }}" "${{ env.TMP_DIR }}"
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TMP_DIR: tmp/package/${{ env.BINARY_NAME }}_${{ github.ref_name }}_${{ env.TARGET }}
+          SOURCE_BINARY: target/${{ env.TARGET }}/release/${{ env.BINARY_NAME }}
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
-          path: package
+          path: tmp
           retention-days: 1
 
 
@@ -74,14 +80,17 @@ jobs:
         env:
           CARGO_TARGET_ARM_UNKNOWN_LINUX_MUSLEABIHF_LINKER: arm-linux-gnueabihf-gcc
       - run: |
-          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          mkdir -p "${{ env.TMP_DIR }}"
+          cp "${{ env.SOURCE_BINARY }}" "${{ env.TMP_DIR }}"
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TMP_DIR: tmp/package/${{ env.BINARY_NAME }}_${{ github.ref_name }}_${{ env.TARGET }}
+          SOURCE_BINARY: target/${{ env.TARGET }}/release/${{ env.BINARY_NAME }}
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
-          path: package
+          path: tmp
           retention-days: 1
 
   build-macos:
@@ -95,14 +104,17 @@ jobs:
           target: ${{ env.TARGET }}
       - run: cargo build --release --target $TARGET
       - run: |
-          mkdir -p package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
-          cp target/$TARGET/release/$BINARY_NAME package/$BINARY_NAME_${{ github.ref_name }}_$TARGET
+          mkdir -p "${{ env.TMP_DIR }}"
+          cp "${{ env.SOURCE_BINARY }}" "${{ env.TMP_DIR }}"
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TMP_DIR: tmp/package/${{ env.BINARY_NAME }}_${{ github.ref_name }}_${{ env.TARGET }}
+          SOURCE_BINARY: target/${{ env.TARGET }}/release/${{ env.BINARY_NAME }}
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
-          path: package
+          path: tmp
           retention-days: 1
 
   build-windows-x86_64:
@@ -118,14 +130,17 @@ jobs:
         env:
           RUSTFLAGS: -C target-feature=+crt-static
       - run: |
-          mkdir -p package/$env:BINARY_NAME_${{ github.ref_name }}_$env:TARGET
-          cp target/$env:TARGET/release/$env:BINARY_NAME package/$env:BINARY_NAME_${{ github.ref_name }}_$env:TARGET
+          mkdir -p "${{ env.TMP_DIR }}"
+          cp "${{ env.SOURCE_BINARY }}.exe" "${{ env.TMP_DIR }}"
         if: ${{ github.ref_type == 'tag' }}
+        env:
+          TMP_DIR: tmp/package/${{ env.BINARY_NAME }}_${{ github.ref_name }}_${{ env.TARGET }}
+          SOURCE_BINARY: target/${{ env.TARGET }}/release/${{ env.BINARY_NAME }}
       - uses: actions/upload-artifact@v7
         if: ${{ github.ref_type == 'tag' }}
         with:
           name: tmp-${{ env.TARGET }}
-          path: package
+          path: tmp
           retention-days: 1
 
   third-party-licenses:
